@@ -17,27 +17,28 @@ typedef struct List
     // Объект данных созданный выше
     DataList Data;
     // Указатель на этот-же объект list (для того чтобы можно было ссылаться на другие желементы списка)
-    struct List* next;
+    struct List* prev, *next;
 } ListObj;
 
 
 // Указатели на объекты
 ListObj* head = NULL, * tail = NULL;
 
-
 // Функция инициализации списка
 void initList(DataList data) {
     // Создаем объект структуры ListObj
     ListObj* ptr = new ListObj;
 
-    // Присваиваем значение её параметрам (данным и указателем на следующий элемент)
+    // Присваиваем значение её параметрам (данным и указателем)
     ptr->Data = data;
     ptr->next = NULL;
+    ptr->prev = NULL;
 
     // Присваиваем указатель на голову и на хвост
     head = ptr;
     tail = ptr;
 
+    cout << "Инициализирован первый элемент списка. \nptr: " << ptr << " next: " << ptr->next << " prev: " << ptr->prev << " head: " << head << " tail:" << tail << endl;
     return;
 }
 
@@ -60,8 +61,11 @@ void push_front() {
         // Присваиваем ему значения
         ptr->Data = data;
         ptr->next = head;
+        head->prev = ptr;
+        ptr->prev = NULL;
         // Указываем что объект является головой
         head = ptr;
+        cout << "Инициализирован элемент списка. ptr: " << ptr << " next: " << ptr->next << " prev: " << ptr->prev << " head: " << head << endl;
     }
     return;
 }
@@ -85,9 +89,11 @@ void push_back() {
         // Присваиваем ему значения
         ptr->Data = data;
         tail->next = ptr; // Предыдущий объект указывает на только что созданный. Т.к. мы добавляем его в хвост
+        ptr->prev = tail; 
         ptr->next = NULL;
         // Указываем что объект является хвостом
         tail = ptr;
+        cout << "Инициализирован элемент списка. ptr: " << ptr << " next: " << ptr->next << " prev: " << ptr->prev << " tail:" << tail << endl;
     }
     return;
 }
@@ -105,21 +111,23 @@ void insert() {
     DataList data = { n };
 
     ListObj* ptr = new ListObj;
+    ListObj* obj = head, * temp_next = nullptr, *temp_prev = nullptr;
 
-    // Создаем указатели
-    ListObj* obj = head, * temp = nullptr;
-
-    for (int i = 1; obj != NULL; i++) {
-        if (i == pos - 1) {
+    for (int count = 1; obj != NULL; count++) {
+        if (count == pos) {
             if (obj->next == NULL) {
                 cout << "Для вставки элемента в хвост используйте существующую для этого функцию.\n";
                 return;
             }
             else {
-                temp = obj->next; // Сохраняем указатель на следующий элемент
-                obj->next = ptr; // Предыдущий объект указывает на только что созданный
-                ptr->Data = data; // Записали данные в новый объект
-                ptr->next = temp; // Созданный объект указывает на следующий
+                temp_prev = obj->prev;
+                temp_next = obj->next;
+                ptr->next = obj;
+                ptr->prev = temp_prev;
+                temp_prev->next = ptr;
+                temp_next->prev = ptr;
+                ptr->Data = data;
+                cout << "Инициализирован элемент списка. ptr: " << ptr << " next: " << ptr->next << " prev: " << ptr->prev << endl;
             }
         }
 
@@ -142,78 +150,68 @@ void del() {
     cout << "Введите номер элемента списка: ";
     cin >> n;
 
+    ListObj* obj = head, * temp_next = nullptr, * temp_prev = nullptr;
 
-    // Создаем два объекта по образу ListObj
-    ListObj* temp = head;
-    ListObj* obj = nullptr;
-
-    // Если нужно удалить первый объект в списке
-    if (n == 1 && temp != NULL) {
-        head = temp->next;
-        delete(temp);
-        // Если объект был последним и первым одновременно (1 элемент в списке), указываем что он же является хвостом
-        if (head == NULL) tail = NULL;
-
-        return;
-    }
-    // Если удаляем не первый объект
-    else {
-        // Проходим по всем объектам
-        for (int i = 1; i != n; i++) {
-            // Если элемент существует
-            if (temp != NULL) {
-                // Находим предыдущий от удаляемого 
-                if (n == i + 1) {
-                    // Запоминаем удаляемый элемент для дальнейшей очистки памяти
-                    obj = temp->next;
-                    temp->next = temp->next->next;
-                    // Очищаем память от удаленного элемента
-                    delete obj;
-
-                    // Если удаляемый элемент был последний, указываем новый хвост
-                    if (temp->next == NULL) tail = temp;
-                    return;
-                }
-                temp = temp->next;
-            }
+    for (int i = 1; obj != NULL; i++) {
+        if (i == n) {
+            cout << "Выбран объект с индексом " << i << " obj: " << obj << endl;
+            break;
         }
+        obj = obj->next;
     }
+
+    temp_next = obj->next;
+    temp_prev = obj->prev;
+    delete obj;
+
+    if (temp_prev != NULL) temp_prev->next = temp_next;
+    else head = temp_next;
+
+    if (temp_next != NULL) temp_next->prev = temp_prev;
+    else tail = temp_prev;
+
+    return;
 }
 
 
 // Функция вывода на экран
 void show() {
     ListObj* obj = head;
-    cout << "Элементы списка: ";
+    /*cout << "Элементы списка: ";*/
 
     // Пока объект не пуст
+    //while (obj != NULL) {
+    //    // Выводим значение
+    //    cout << obj->Data.Data << " ";
+    //    // Перелистываем на следующий указатель
+    //    obj = obj->next;
+    //}
+
+    cout << "Элементы списка: \n";
+
     while (obj != NULL) {
         // Выводим значение
-        cout << obj->Data.Data << " ";
+        cout << "data: " << obj->Data.Data << endl;
+        cout << "obj:" << obj << " prev: " << obj->prev << " next: " << obj->next << "\n\n";
         // Перелистываем на следующий указатель
         obj = obj->next;
     }
+    cout << "head: " << head << " tail: " << tail << endl;
     cout << "\nЭлементы списка выведены на экран.\n";
     // Очищаем память
     delete obj;
     return;
 }
 
-
-// Функция сохранения
 void safe() {
-    // Создаем объект для записи
     ofstream listSafe;
     string filename;
     cout << "Введите название файла, в который нужно сохранить список: ";
     cin >> filename;
 
-    // Открываем файл
     listSafe.open(filename + ".txt");
-    // Создаем объект списка
     ListObj* obj = head;
 
-    // Проверяем открыт ли файл
     if (!listSafe.is_open()) {
         cout << "Произошла ошибка при создании файла. Проверьте правильность ввода названия файла.\n";
         return;
@@ -229,42 +227,31 @@ void safe() {
     listSafe.close();
 }
 
-
-// Функция загрузки
 void load() {
-    // Создаем объект для чтения
     ifstream listLoad;
     string filename;
     cout << "Введите название файла, из которого нужно загрузить список: ";
     cin >> filename;
 
-    // Создаем буферную переменную для хранения чисел
     int buffer = NULL;
-    // Создаем новый объект структуры и записываем в него данные из буфера
     DataList data = { buffer };
 
-    // Открываем файл для чтения
     listLoad.open(filename + ".txt");
 
-    // Если в списке уже есть какие-то объекты
     if (head != NULL || tail != NULL) {
-        cout << "Для загрузки списка он должен быть пустым! Очистите список и повторите попытку.\n";
+        cout << "Для загрузки списка файл должен быть пустым! Очистите список и повторите попытку.\n";
         return;
     }
 
-    // Если файл не смог открыться
     if (!listLoad.is_open()) {
         cout << "Произошла ошибка при открытии файла. Проверьте правильность ввода названия файла.\n";
         return;
     }
     else {
-        // Считываем первое число из файла один раз, чтобы
         listLoad >> buffer;
         data = { buffer };
-        // Запустить инициализацию списка
         initList(data);
 
-        // Пока в файле есть данные для считывания
         while (listLoad >> buffer) {
             data = { buffer };
             // Создаем объект списка
@@ -272,21 +259,19 @@ void load() {
             // Присваиваем ему значения
             ptr->Data = data;
             tail->next = ptr; // Предыдущий объект указывает на только что созданный. Т.к. мы добавляем его в хвост
+            ptr->prev = tail;
             ptr->next = NULL;
             // Указываем что объект является хвостом
             tail = ptr;
+            cout << "Инициализирован элемент списка. \nptr: " << ptr << " next: " << ptr->next << " prev: " << ptr->prev << " tail:" << tail << endl;
         }
     }
 
     cout << "Список успешно загружен из файла: " << filename << ".txt\n";
-    // Закрываем файл
     listLoad.close();
 }
 
-
-// Функция перестановки
 void replace() {
-    // Флаги отслеживающие менялись ли голова и хвост
     bool headChanged = false, tailChanged = false;
     int a, b;
     cout << "Введите номера элемента списка: \n";
@@ -295,73 +280,57 @@ void replace() {
     cout << "B: ";
     cin >> b;
 
-    // Создаем указатели на объекты списка
+
     ListObj* obj = head;
     ListObj* temp_a = nullptr;
     ListObj* temp_b = nullptr;
     ListObj* temp_a_next = nullptr;
     ListObj* temp_b_next = nullptr;
-    ListObj* temp_a_prev = head;
-    ListObj* temp_b_prev = head;
+    ListObj* temp_a_prev = nullptr;
+    ListObj* temp_b_prev = nullptr;
 
-    // Ищем нужные объекты в списке
     for (int i = 1; obj != NULL; i++) {
         if (i == a) temp_a = obj;
         if (i == b) temp_b = obj;
         obj = obj->next;
     }
 
-    // Проверяем указывает ли указатель на голову
-    if (temp_a_prev == temp_a) temp_a_prev == NULL;
-    else {
-        // В противном случае перемещаем указатель пока не дойдем до предыдущего от А
-        while (temp_a_prev->next != temp_a) {
-            temp_a_prev = temp_a_prev->next;
-        }
-    }
-
-    // То же самое повторяем для Б
-    if (temp_b_prev == temp_b) temp_b_prev == NULL;
-    else {
-        while (temp_b_prev->next != temp_b) {
-            temp_b_prev = temp_b_prev->next;
-        }
-    }
-
-    // Указатель на следующие объекты
+    
     temp_a_next = temp_a->next;
     temp_b_next = temp_b->next;
+    temp_a_prev = temp_a->prev;
+    temp_b_prev = temp_b->prev;
 
-
-    // Исключение, если объекты для перестановки стоят рядом
+    
     if (temp_b == temp_a_next) {
         temp_b->next = temp_a;
+        temp_b->prev = temp_a_prev;
         temp_a->next = temp_b_next;
-        // Если один из переставляемых не был головой, можем присвоить указатель
+        temp_a->prev = temp_b;
+        if (temp_b_next != NULL) temp_b_next->prev = temp_a;
         if (temp_a != head) temp_a_prev->next = temp_b;
     }
-    // Исключение, если объекты для перестановки стоят рядом
+    
     else if (temp_a == temp_b_next) {
         temp_a->next = temp_b;
+        temp_a->prev = temp_b_prev;
         temp_b->next = temp_a_next;
-        // Если один из переставляемых не был головой, можем присвоить указатель
-        if (temp_b != head) temp_b_prev->next = temp_b;
-    }
-    // Если объекты разделены
-    else {
-        // Проверка переставляем ли мы голову
-        if (temp_a != head) {
-            temp_a_prev->next = temp_b;
-        }
-        temp_b->next = temp_a_next;
-        // Проверка переставляем ли мы голову
-        if (temp_b != head) {
-            temp_b_prev->next = temp_a;
-        }
-        temp_a->next = temp_b_next;
+        temp_b->prev = temp_a;
+        if (temp_a_next != NULL) temp_a_next->prev = temp_b;
+        if (temp_b != head) temp_b_prev->next = temp_a;
     }
 
-    // Если голова была переставлена, но не менялся указатель, то присваеваем голове новый
+    else {
+        if (temp_a != head) temp_a_prev->next = temp_b;
+        temp_b->next = temp_a_next;
+        if (temp_b != head) temp_b_prev->next = temp_a;
+        temp_a->next = temp_b_next;
+        temp_b->prev = temp_a_prev;
+        if (temp_b_next != NULL) temp_b_next->prev = temp_a;
+        temp_a->prev = temp_b_prev;
+        if (temp_a_next != NULL) temp_a_next->prev = temp_b;
+    }
+
     if (temp_a == head && headChanged == false) {
         head = temp_b;
         headChanged = true;
@@ -372,7 +341,6 @@ void replace() {
         headChanged = true;
         cout << "head has been changed\n";
     }
-    // То же самое для хвоста
     if (temp_a == tail && tailChanged == false) {
         tail = temp_b;
         tailChanged = true;
@@ -384,17 +352,15 @@ void replace() {
         cout << "tail has been changed\n";
     }
 
-    //Проверка
-    //cout << "temp_a: " << temp_a << " temp_b: " << temp_b << " head: " << head << " tail: " << tail << endl;
+    cout << "temp_a: " << temp_a << " temp_b: " << temp_b << " head: " << head << " tail: " << tail << endl;
 
     return;
 }
 
-
 int main()
 {
     setlocale(0, "");
-    cout << "Однонаправленные списки\n";
+    cout << "Двунаправленные списки\n";
 
     int menuChoice = NULL;
 
