@@ -249,13 +249,11 @@ void safe() {
     }
     else {
         while (obj != NULL) {
-
-            listSafe << endl;
             listSafe << "Имя: " << obj->Data.Name << " ";
             listSafe << "Рост: " << obj->Data.Height << " ";
             listSafe << "Возраст: " << obj->Data.Age << " ";
+            listSafe << endl;
             obj = obj->next;
-
         }
     }
 
@@ -274,7 +272,7 @@ void load() {
     // Создаем буферные переменные для хранения данных
     string nameOfStudent;
     float heightOfStudent = NULL;
-    int ageOfStudent =  NULL;
+    int ageOfStudent = NULL;
     string buffer;
 
     // Создаем новый объект структуры и записываем в него данные из буфера
@@ -302,24 +300,28 @@ void load() {
         listLoad >> heightOfStudent;
         listLoad >> buffer;
         listLoad >> ageOfStudent;
-    }
 
-
-    data = { nameOfStudent, heightOfStudent, ageOfStudent };
-    // Запустить инициализацию списка
-    initList(data);
-
-    // Пока в файле есть данные для считывания
-    while (listLoad >> buffer ) {
         data = { nameOfStudent, heightOfStudent, ageOfStudent };
-        // Создаем объект списка
-        ListObj* ptr = new ListObj;
-        // Присваиваем ему значения
-        ptr->Data = data;
-        tail->next = ptr; // Предыдущий объект указывает на только что созданный. Т.к. мы добавляем его в хвост
-        ptr->next = NULL;
-        // Указываем что объект является хвостом
-        tail = ptr;
+        // Запустить инициализацию списка
+        initList(data);
+
+        // Пока в файле есть данные для считывания
+        while (listLoad >> buffer) {
+            listLoad >> nameOfStudent;
+            listLoad >> buffer;
+            listLoad >> heightOfStudent;
+            listLoad >> buffer;
+            listLoad >> ageOfStudent;
+            data = { nameOfStudent, heightOfStudent, ageOfStudent };
+            // Создаем объект списка
+            ListObj* ptr = new ListObj;
+            // Присваиваем ему значения
+            ptr->Data = data;
+            tail->next = ptr; // Предыдущий объект указывает на только что созданный. Т.к. мы добавляем его в хвост
+            ptr->next = NULL;
+            // Указываем что объект является хвостом
+            tail = ptr;
+        }
     }
 }
 
@@ -330,10 +332,10 @@ void find()
     string nameFind;
     float heightFind;
     int ageFind;
+    bool finded = false;
 
     // Создаем указатели
-    ListObj* temp = head;
-    ListObj* obj = nullptr;
+    ListObj* obj = head;
 
     cout << "По какому параметру выполнять поиск?" << endl;
     cout << "1. Имя" << endl;
@@ -344,27 +346,66 @@ void find()
     if (n < 1 || n > 3) {
         cout << "Неверный пункт! Повторите попытку.\n";
     }
-    if (n = 1)
+
+    if (n == 1)
     {
         cout << "Введите имя: ";
         cin >> nameFind;
+        while (obj != NULL) {
+            if (obj->Data.Name == nameFind) {
+                finded = true;
+                cout << "Найдена запись.\n";
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " \n";
+            }
+            obj = obj->next;
+        }
+
+        if (!finded) cout << "В базе данных нет записей с именем " << nameFind << "!\n";
+        finded = false;
     }
 
-    else if (n = 2)
+    if (n == 2)
     {
         cout << "Введите рост: ";
         cin >> heightFind;
+        while (obj != NULL) {
+            if (obj->Data.Height == heightFind) {
+                finded = true;
+                cout << "Найдена запись.\n";
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " \n";
+            }
+            obj = obj->next;
+        }
+
+        if (!finded) cout << "В базе данных нет записей с ростом " << heightFind << "!\n";
+        finded = false;
     }
 
-    else if (n = 3)
+    if (n == 3)
     {
         cout << "Введите возраст: ";
         cin >> ageFind;
-    }
+        while (obj != NULL) {
+            if (obj->Data.Age == ageFind) {
+                finded = true;
+                cout << "Найдена запись.\n";
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " \n";
+            }
+            obj = obj->next;
+        }
 
+        if (!finded) cout << "В базе данных нет записей с возрастом " << ageFind << "!\n";
+        finded = false;
+    }
 }
 
-// Функция сортировки
+// Функция сортировки (доделать)
 void sorting()
 {
     int n;
@@ -383,17 +424,17 @@ void sorting()
     }
     if (n = 1)
     {
-        
+
     }
 
     else if (n = 2)
     {
-       
+
     }
 
     else if (n = 3)
     {
-      
+
     }
 
     // Создаем указатели
@@ -406,27 +447,25 @@ void edit()
 {
     int n;
     int m;
-    cout << " Введите номер элемента, который нужно отредактировать: ";
+    cout << "Введите номер элемента, который нужно отредактировать: ";
     cin >> n;
+    cout << endl;
 
     // Создаем указатели
     ListObj* obj = head;
 
     // Проходим по всем объектам
-    for (int i = 1; i != n + 1; i++)
+    for (int i = 1; obj != NULL; i++)
     {
-        // Если элемент существует
-        if (obj != NULL)
+        if (n == i)
         {
-            if (n == i)
-            {
-                // Выводим значение
-                cout << endl;
-                cout << "Имя: " << obj->Data.Name << " ";
-                cout << "Рост: " << obj->Data.Height << " ";
-                cout << "Возраст: " << obj->Data.Age << " ";
-            }
-            cout << n << " элемент базы данных <Студенты> выведен на экран." << endl;
+            // Выводим значение
+            cout << "Имя: " << obj->Data.Name << " ";
+            cout << "Рост: " << obj->Data.Height << " ";
+            cout << "Возраст: " << obj->Data.Age << " ";
+            cout << endl;
+
+            cout << n << " элемент базы данных <Студенты> выведен на экран.\n\n";
 
             cout << "Какой параметр нужно отредактировать?" << endl;
             cout << "1. Имя" << endl;
@@ -437,27 +476,52 @@ void edit()
             if (m < 1 || m > 3) {
                 cout << "Неверный пункт! Повторите попытку.\n";
             }
-            if (m = 1)
-            {
 
+            if (m == 1)
+            {
+                string nameBuff;
+                cout << "На что надо заменить значение: ";
+                cin >> nameBuff;
+                obj->Data.Name = nameBuff;
+                cout << "Значение отредактировано.\n";
+                cout << endl;
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " ";
+                cout << endl;
             }
 
-            else if (m = 2)
+            if (m == 2)
             {
-
+                float heightBuff;
+                cout << "На что надо заменить значение: ";
+                cin >> heightBuff;
+                obj->Data.Height = heightBuff;
+                cout << "Значение отредактировано.\n";
+                cout << endl;
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " ";
+                cout << endl;
             }
 
-            else if (m = 3)
+            if (m == 3)
             {
-
+                int ageBuff;
+                cout << "На что надо заменить значение: ";
+                cin >> ageBuff;
+                obj->Data.Age = ageBuff;
+                cout << "Значение отредактировано.\n";
+                cout << endl;
+                cout << "Имя: " << obj->Data.Name << " ";
+                cout << "Рост: " << obj->Data.Height << " ";
+                cout << "Возраст: " << obj->Data.Age << " ";
+                cout << endl;
             }
-            // Очищаем память
-            delete obj;
-            return;
         }
         obj = obj->next;
     }
-
+    return;
 }
 
 int main()
