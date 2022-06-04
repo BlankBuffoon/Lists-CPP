@@ -405,13 +405,12 @@ void find()
     }
 }
 
+void replace(ListObj* temp_a, ListObj* temp_b);
+
 // Функция сортировки (доделать)
 void sorting()
 {
     int n;
-    string nameSort;
-    float heightSort;
-    int ageSort;
 
     cout << "По какому параметру сортировать?" << endl;
     cout << "1. Имя" << endl;
@@ -419,27 +418,161 @@ void sorting()
     cout << "3. Возраст" << endl;
     cin >> n;
 
+    // Создаем указатели
+    ListObj* obj = head;
+    ListObj* objNext = head->next;
+    ListObj* tempMin = head;
+    ListObj* temp = head;
+
     if (n < 1 || n > 3) {
         cout << "Неверный пункт! Повторите попытку.\n";
     }
-    if (n = 1)
-    {
 
+    if (n == 1)
+    {
+        while (obj != NULL) {
+            while (temp != NULL) {
+                // Сравниваем значения (для букв это первый символ) и находим минимальное
+                if (tempMin->Data.Name[0] > temp->Data.Name[0]) {
+                    tempMin = temp;
+                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
+                }
+                temp = temp->next;
+            }
+            if (obj != tempMin) replace(obj, tempMin); // Меняем местами
+            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
+            obj = objNext; // Присваиваем новые значения
+            if (obj->next == NULL) return; // Если находимся в конце списка - выходим из функции
+            objNext = obj->next;
+            tempMin = obj;
+            temp = obj;
+        }
+        cout << "База данных отсортирована.\n";
     }
 
-    else if (n = 2)
+    if (n == 2)
     {
-
+        while (obj != NULL) {
+            while (temp != NULL) {
+                if (tempMin->Data.Height > temp->Data.Height) {
+                    tempMin = temp;
+                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
+                }
+                temp = temp->next;
+            }
+            if (obj != tempMin) replace(obj, tempMin);
+            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
+            obj = objNext;
+            if (obj->next == NULL) return;
+            objNext = obj->next;
+            tempMin = obj;
+            temp = obj;
+        }
+        cout << "База данных отсортирована.\n";
     }
 
-    else if (n = 3)
+    if (n == 3)
     {
+        while (obj != NULL) {
+            while (temp != NULL) {
+                if (tempMin->Data.Age > temp->Data.Age) {
+                    tempMin = temp;
+                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
+                }
+                temp = temp->next;
+            }
+            if (obj != tempMin) replace(obj, tempMin);
+            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
+            obj = objNext;
+            if (obj->next == NULL) return;
+            objNext = obj->next;
+            tempMin = obj;
+            temp = obj;
+        }
+        cout << "База данных отсортирована.\n";
+    }
+}
 
+void replace(ListObj* temp_a, ListObj* temp_b) {
+    // Флаги отслеживающие менялись ли голова и хвост
+    bool headChanged = false, tailChanged = false;
+
+    // Создаем указатели на объекты списка
+    ListObj* temp_a_next = nullptr;
+    ListObj* temp_b_next = nullptr;
+    ListObj* temp_a_prev = head;
+    ListObj* temp_b_prev = head;
+
+    // Проверяем указывает ли указатель на голову
+    if (temp_a_prev == temp_a) temp_a_prev == NULL;
+    else {
+        // В противном случае перемещаем указатель пока не дойдем до предыдущего от А
+        while (temp_a_prev->next != temp_a) {
+            temp_a_prev = temp_a_prev->next;
+        }
     }
 
-    // Создаем указатели
-    ListObj* temp = head;
-    ListObj* obj = nullptr;
+    // То же самое повторяем для Б
+    if (temp_b_prev == temp_b) temp_b_prev == NULL;
+    else {
+        while (temp_b_prev->next != temp_b) {
+            temp_b_prev = temp_b_prev->next;
+        }
+    }
+
+    // Указатель на следующие объекты
+    temp_a_next = temp_a->next;
+    temp_b_next = temp_b->next;
+
+
+    // Исключение, если объекты для перестановки стоят рядом
+    if (temp_b == temp_a_next) {
+        temp_b->next = temp_a;
+        temp_a->next = temp_b_next;
+        // Если один из переставляемых не был головой, можем присвоить указатель
+        if (temp_a != head) temp_a_prev->next = temp_b;
+    }
+    // Исключение, если объекты для перестановки стоят рядом
+    else if (temp_a == temp_b_next) {
+        temp_a->next = temp_b;
+        temp_b->next = temp_a_next;
+        // Если один из переставляемых не был головой, можем присвоить указатель
+        if (temp_b != head) temp_b_prev->next = temp_b;
+    }
+    // Если объекты разделены
+    else {
+        // Проверка переставляем ли мы голову
+        if (temp_a != head) {
+            temp_a_prev->next = temp_b;
+        }
+        temp_b->next = temp_a_next;
+        // Проверка переставляем ли мы голову
+        if (temp_b != head) {
+            temp_b_prev->next = temp_a;
+        }
+        temp_a->next = temp_b_next;
+    }
+
+    // Если голова была переставлена, но не менялся указатель, то присваеваем голове новый
+    if (temp_a == head && headChanged == false) {
+        head = temp_b;
+        headChanged = true;
+    }
+    if (temp_b == head && headChanged == false) {
+        head = temp_a;
+        headChanged = true;
+    }
+    // То же самое для хвоста
+    if (temp_a == tail && tailChanged == false) {
+        tail = temp_b;
+        tailChanged = true;
+    }
+    if (temp_b == tail && tailChanged == false) {
+        tail = temp_a;
+        tailChanged = true;
+    }
+
+    return;
 }
 
 // Функция редактирования
