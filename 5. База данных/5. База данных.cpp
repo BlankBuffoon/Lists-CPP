@@ -407,7 +407,7 @@ void find()
 
 void replace(ListObj* temp_a, ListObj* temp_b);
 
-// Функция сортировки (доделать)
+// Функция сортировки
 void sorting()
 {
     int n;
@@ -435,12 +435,10 @@ void sorting()
                 // Сравниваем значения (для букв это первый символ) и находим минимальное
                 if (tempMin->Data.Name[0] > temp->Data.Name[0]) {
                     tempMin = temp;
-                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
                 }
                 temp = temp->next;
             }
             if (obj != tempMin) replace(obj, tempMin); // Меняем местами
-            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
             obj = objNext; // Присваиваем новые значения
             if (obj->next == NULL) return; // Если находимся в конце списка - выходим из функции
             objNext = obj->next;
@@ -456,12 +454,10 @@ void sorting()
             while (temp != NULL) {
                 if (tempMin->Data.Height > temp->Data.Height) {
                     tempMin = temp;
-                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
                 }
                 temp = temp->next;
             }
             if (obj != tempMin) replace(obj, tempMin);
-            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
             obj = objNext;
             if (obj->next == NULL) return;
             objNext = obj->next;
@@ -474,17 +470,18 @@ void sorting()
     if (n == 3)
     {
         while (obj != NULL) {
+            // Ищем минимальное значение
             while (temp != NULL) {
                 if (tempMin->Data.Age > temp->Data.Age) {
                     tempMin = temp;
-                    //cout << "min: " << tempMin->Data.Age << " с именем: " << tempMin->Data.Name << endl;
                 }
                 temp = temp->next;
             }
+            // Если минимальный объект и текущий не равны, меняем их местами
             if (obj != tempMin) replace(obj, tempMin);
-            //cout << "Заменен: " << obj->Data.Name << " | " << obj->Data.Age <<  " и " << tempMin->Data.Name << " | " << tempMin->Data.Age << endl;
+            // Присваиваем новые значения указателям
             obj = objNext;
-            if (obj->next == NULL) return;
+            if (obj->next == NULL) return; // Если дошли до конца списка
             objNext = obj->next;
             tempMin = obj;
             temp = obj;
