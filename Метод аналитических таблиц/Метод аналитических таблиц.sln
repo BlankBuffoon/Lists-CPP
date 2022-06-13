@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32516.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Метод аналитических таблиц", "Метод аналитических таблиц.vcxproj", "{0DA17F3B-EE43-4FAD-97E7-42B59C894713}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Debug|x64.ActiveCfg = Debug|x64
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Debug|x64.Build.0 = Debug|x64
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Debug|x86.ActiveCfg = Debug|Win32
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Debug|x86.Build.0 = Debug|Win32
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Release|x64.ActiveCfg = Release|x64
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Release|x64.Build.0 = Release|x64
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Release|x86.ActiveCfg = Release|Win32
+		{0DA17F3B-EE43-4FAD-97E7-42B59C894713}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50F168A4-BE90-42A4-999E-E85AB793C6A0}
+	EndGlobalSection
+EndGlobal
