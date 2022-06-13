@@ -23,7 +23,6 @@ vector <graphObj*> findedObj;
 // Типы данных отвечающие за правильную инициализацию функций
 typedef enum NewNodeEdgeDirection { LEFT, RIGHT } edgedir;
 typedef enum FindObjectType { FREE, NEED } findtype;
-typedef enum saveType {ViewOnly, Load} saveType;
 
 
 // Объекты для работы с файлами
@@ -31,7 +30,7 @@ ifstream loadFile;
 ofstream saveFile;
 
 
-// Функции
+// Объявляем функции
 void find_node(findtype type, graphObj* obj, int findData);
 void add_node(graphObj* parentObj, graphObj* childObj, edgedir dir);
 void del_node(graphObj* delobj);
@@ -62,6 +61,7 @@ void add_node_handler() {
         // Ищем свободные объекты
         find_node(FREE, root, NULL);
 
+        // Если нашлись какие-либо элементы
         if (findedObj.size() > 0) {    
             // Выводим дерево
             cout << endl;
@@ -77,7 +77,9 @@ void add_node_handler() {
                 else cout << " | Родитель: NULL" << endl;
             }
 
+            // choicedVertical - Выбранная вершина
             int cVert;
+            // Номер выбранного ребра
             int numChoiceEdgeDir;
             edgedir direction;
             cout << "Выберите с какой необходимо установить связь (укажите номер): ";
@@ -86,7 +88,7 @@ void add_node_handler() {
 
             // Если у выбранного объекта есть и правая, и левая свободная связь
             if (findedObj[cVert]->childLeft == NULL && findedObj[cVert]->childRight == NULL) {
-                cout << "Выбранная вершина может иметь несколько потомков. К какой стороне указать связь?\n";
+                cout << "Выбранная вершина может иметь несколько потомков. К какой стороне установить связь?\n";
                 cout << "1 - К левой\n2 - К правой\n";
                 cin >> numChoiceEdgeDir;
                 if (numChoiceEdgeDir == 1) direction = LEFT;
@@ -156,9 +158,11 @@ void del_node_handler() {
             else cout << " | Родитель: NULL" << endl;
         }
 
+        // choicedVertical - Выбранная вершина
         int cVert;
         cout << "Выберите какую из вершин удалить (укажите номер): ";
         cin >> cVert;
+        // Уменьшайем значение так как отсчет в массиве начинается с 0
         cVert--;
 
         // Если удаляемый не был корнем, убираем дочерние связи его родителя
@@ -261,7 +265,7 @@ void show_nodes(const string& prefix, const graphObj* node, bool isLeft)
 // Функция - обработчик (для более легкого вызова функции)
 void show_nodes(const graphObj* node) {
     show_nodes("", node, false);
-}
+} 
 
 
 // Функция сохранения
@@ -301,15 +305,6 @@ void save_nodes(const string& prefix, const graphObj* node, bool isLeft)
         save_nodes(prefix + (isLeft ? "|  " : "   "), node->childRight, false);
     }
 }
-
-
-
-/*
-void load() {
-    /// ?????
-}
-*/
-
 
 
 // Главная функция
@@ -354,7 +349,6 @@ int main()
         }
         if (menuChoice == 5) show_nodes(root);
         if (menuChoice == 6) save();
-        //if (menuChoice == 7) load();
 
     } while (menuChoice != 0);
 }
